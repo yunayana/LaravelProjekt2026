@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('equipment_usage_logs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('equipment_id')->constrained('equipment')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->timestamp('usage_start');
+            $table->timestamp('usage_end')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

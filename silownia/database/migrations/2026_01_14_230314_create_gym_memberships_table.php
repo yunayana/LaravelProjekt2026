@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('gym_memberships', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->string('status')->default('active');
+            $table->string('membership_type')->default('standard');
             $table->timestamps();
         });
     }

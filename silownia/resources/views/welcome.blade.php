@@ -30,19 +30,37 @@
                         >
                             Dashboard
                         </a>
+
+                        @if(auth()->user()->hasRole('admin'))
+                            <a href="{{ route('admin.dashboard') }}" class="inline-block px-5 py-1.5 bg-blue-600 text-white rounded-sm text-sm">Panel Admina</a>
+                        @endif
+
+                        @if(auth()->user()->hasRole('employee'))
+                            <a href="{{ route('employee.dashboard') }}" class="inline-block px-5 py-1.5 bg-green-600 text-white rounded-sm text-sm">Panel Pracownika</a>
+                        @endif
+
+                        @if(auth()->user()->hasRole('client'))
+                            <a href="{{ route('client.dashboard') }}" class="inline-block px-5 py-1.5 bg-purple-600 text-white rounded-sm text-sm">Panel Klienta</a>
+                        @endif
+
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="px-5 py-1.5 text-red-600">Wyloguj</button>
+                        </form>
                     @else
                         <a
                             href="{{ route('login') }}"
-                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
+                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
                         >
-                            Log in
+                            Zaloguj się
                         </a>
 
                         @if (Route::has('register'))
                             <a
                                 href="{{ route('register') }}"
-                                class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal">
-                                Register
+                                class="inline-block px-5 py-1.5 bg-[#1b1b18] text-white hover:bg-black dark:bg-[#eeeeec] dark:text-[#1b1b18] dark:hover:bg-white rounded-sm text-sm leading-normal"
+                            >
+                                Zarejestruj się
                             </a>
                         @endif
                     @endauth

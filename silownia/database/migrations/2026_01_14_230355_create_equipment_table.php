@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('equipment', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->text('description');
+            $table->string('location');
+            $table->date('purchase_date');
+            $table->string('condition')->default('excellent');
+            $table->integer('quantity')->default(1);
             $table->timestamps();
         });
     }
