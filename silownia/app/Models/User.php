@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -57,6 +58,21 @@ class User extends Authenticatable
         return $this->roles()
             ->where('name', $role)
             ->exists();
+    }
+
+    public function gymMembership()
+    {
+        return $this->hasOne(GymMembership::class);
+    }
+
+    public function classRegistrations(): HasMany
+    {
+        return $this->hasMany(ClassRegistration::class);
+    }
+
+    public function equipmentUsageLogs(): HasMany
+    {
+        return $this->hasMany(EquipmentUsageLog::class);
     }
 }
 

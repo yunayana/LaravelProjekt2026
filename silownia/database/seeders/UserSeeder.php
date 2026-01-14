@@ -9,31 +9,25 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@gym.pl'],
-            [
-                'name' => 'Administrator',
-                'password' => Hash::make('admin123'),
-            ]
-        );
+        $admin = User::create([
+            'name' => 'Administrator',
+            'email' => 'admin@gym.pl',
+            'password' => Hash::make('admin123'),
+        ]);
 
-        $employee = User::firstOrCreate(
-            ['email' => 'pracownik@gym.pl'],
-            [
-                'name' => 'Pracownik',
-                'password' => Hash::make('employee123'),
-            ]
-        );
+        $employee = User::create([
+            'name' => 'Pracownik',
+            'email' => 'employee@gym.pl',
+            'password' => Hash::make('employee123'),
+        ]);
 
-        $client = User::firstOrCreate(
-            ['email' => 'klient@gym.pl'],
-            [
-                'name' => 'Klient',
-                'password' => Hash::make('client123'),
-            ]
-        );
+        $client = User::create([
+            'name' => 'Klient',
+            'email' => 'client@gym.pl',
+            'password' => Hash::make('client123'),
+        ]);
 
         $admin->roles()->syncWithoutDetaching(
             Role::where('name', 'admin')->first()
