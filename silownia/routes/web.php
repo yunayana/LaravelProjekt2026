@@ -25,13 +25,30 @@ Route::middleware('auth')->group(function () {
 });
 
 // Client Routes
-Route::middleware(['auth', 'verified', 'role:client'])->prefix('client')->name('client.')->group(function () {
-    Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/membership', [MembershipController::class, 'index'])->name('membership.show');
-    Route::get('/classes', [ClientClassController::class, 'index'])->name('classes.index');
-    Route::post('/classes/{class}/register', [ClientClassController::class, 'register'])->name('classes.register');
-    Route::post('/classes/{class}/unregister', [ClientClassController::class, 'unregister'])->name('classes.unregister');
-});
+Route::middleware(['auth', 'verified', 'role:client'])
+    ->prefix('client')
+    ->name('client.')
+    ->group(function () {
+        Route::get('/dashboard', [ClientDashboardController::class, 'index'])
+            ->name('dashboard');
+
+        // Karnety
+        Route::get('/membership', [MembershipController::class, 'index'])
+            ->name('membership.index');
+
+        Route::post('/membership', [MembershipController::class, 'store'])
+            ->name('membership.store');
+
+        // Zajęcia
+        Route::get('/classes', [ClientClassController::class, 'index'])
+            ->name('classes.index');
+
+        Route::post('/classes/{class}/register', [ClientClassController::class, 'register'])
+            ->name('classes.register');
+
+        Route::post('/classes/{class}/unregister', [ClientClassController::class, 'unregister'])
+            ->name('classes.unregister');
+    });
 
 // Employee Routes
 Route::middleware(['auth', 'verified', 'role:employee'])->prefix('employee')->name('employee.')->group(function () {

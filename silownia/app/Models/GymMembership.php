@@ -20,6 +20,13 @@ class GymMembership extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+    public function isActive(): bool
+    {
+    return $this->status === 'active'
+        && $this->start_date
+        && $this->end_date
+        && now()->between($this->start_date, $this->end_date);
+    }
 
     public function user(): BelongsTo
     {

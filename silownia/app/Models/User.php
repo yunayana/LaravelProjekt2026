@@ -60,9 +60,14 @@ class User extends Authenticatable
             ->exists();
     }
 
-    public function gymMembership()
+    public function gymMemberships(): HasMany
     {
-        return $this->hasOne(GymMembership::class);
+        return $this->hasMany(GymMembership::class);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
     }
 
     public function classRegistrations(): HasMany
