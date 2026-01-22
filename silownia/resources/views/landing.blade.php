@@ -31,43 +31,28 @@
 
     {{-- Karnety --}}
     <section class="mb-12">
-        <h2 class="text-2xl font-semibold text-slate-900 mb-4">Karnety</h2>
+    <h2 class="text-2xl font-semibold text-slate-900 mb-4">Karnety</h2>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach ($memberships as $plan)
-                <div class="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-5 shadow-sm max-w-sm w-full">
-                    <div>
-                        <h3 class="text-lg font-semibold text-slate-900">
-                            {{ $plan['name'] }}
-                        </h3>
-                        <p class="mt-1 text-sm text-slate-600">
-                            {{ $plan['desc'] }}
-                        </p>
-                        <p class="mt-3 text-2xl font-bold text-indigo-600">
-                            {{ number_format($plan['price'], 2, ',', ' ') }} PLN
-                        </p>
-                        <p class="text-xs text-slate-500">
-                            Okres: {{ $plan['duration'] }}
-                        </p>
-                    </div>
+    <div class="grid grid-cols-2 gap-6">
+        @foreach ($memberships as $plan)
+            <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <h3 class="text-lg font-semibold text-slate-900">
+                    {{ $plan['name'] }}
+                </h3>
+                <p class="mt-1 text-sm text-slate-600">
+                    {{ $plan['desc'] }}
+                </p>
+                <p class="mt-3 text-2xl font-bold text-indigo-600">
+                    {{ number_format($plan['price'], 2, ',', ' ') }} PLN
+                </p>
+                <p class="text-xs text-slate-500">
+                    Okres: {{ $plan['duration'] }}
+                </p>
+            </div>
+        @endforeach
+    </div>
+</section>
 
-                    <div class="mt-4">
-                        @auth
-                            <a href="{{ route('client.membership.index') }}"
-                               class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
-                                Kup karnet
-                            </a>
-                        @else
-                            <a href="{{ route('login') }}"
-                               class="inline-flex w-full justify-center rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800">
-                                Zaloguj się, aby kupić
-                            </a>
-                        @endauth
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </section>
 
     {{-- Przykładowe zajęcia --}}
     <section class="mb-12">
