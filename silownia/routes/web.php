@@ -9,14 +9,16 @@ use App\Http\Controllers\Employee\ClientController;
 use App\Http\Controllers\Employee\ClassController as EmployeeClassController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LandingController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Strona powitalna (publiczna)
+Route::get('/', [LandingController::class, 'index'])
+    ->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// (opcjonalnie) jeśli ten widok nie jest używany, możesz całkiem usunąć tę trasę
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -54,15 +56,24 @@ Route::middleware(['auth', 'verified', 'role:client'])
     });
 
 // Employee Routes
-Route::middleware(['auth', 'verified', 'role:employee'])->prefix('employee')->name('employee.')->group(function () {
-    Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])->name('dashboard');
-    Route::resource('clients', ClientController::class)->only(['index', 'show']);
-    Route::resource('classes', EmployeeClassController::class);
-});
+Route::middleware(['auth', 'verified', 'role:employee'])
+    ->prefix('employee')
+    ->name('employee.')
+    ->group(function () {
+        Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])
+            ->name('dashboard');
+
+        Route::resource('clients', ClientController::class)->only(['index', 'show']);
+        Route::resource('classes', EmployeeClassController::class);
+    });
 
 // Admin Routes
-Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-});
+Route::middleware(['auth', 'verified', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+            ->name('dashboard');
+    });
 
 require __DIR__.'/auth.php';
