@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Subscription extends Model
 {
-    protected $fillable = [
+        protected $fillable = [
+        'user_id',
         'gym_membership_id',
         'plan_name',
         'price',
-        'duration_months',        
+        'duration_months',
         'start_date',
         'end_date',
         'active',

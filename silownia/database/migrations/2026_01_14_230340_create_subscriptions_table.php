@@ -13,7 +13,15 @@ return new class extends Migration
     {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('gym_membership_id')->constrained('gym_memberships')->cascadeOnDelete();
+
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
+            $table->foreignId('gym_membership_id')
+                ->constrained('gym_memberships')
+                ->cascadeOnDelete();
+
             $table->string('plan_name');
             $table->decimal('price', 8, 2);
             $table->integer('duration_months')->default(1);
@@ -22,6 +30,7 @@ return new class extends Migration
             $table->boolean('active')->default(true);
             $table->timestamps();
         });
+
     }
 
     /**

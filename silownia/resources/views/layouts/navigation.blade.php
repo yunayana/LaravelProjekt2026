@@ -1,4 +1,5 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+ <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -15,6 +16,22 @@
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Strona główna') }}
                     </x-nav-link>
+
+                    @auth
+                        @if(auth()->user()->hasRole('client'))
+                            <x-nav-link :href="route('client.dashboard')" :active="request()->routeIs('client.dashboard')">
+                                {{ __('Panel klienta') }}
+                            </x-nav-link>
+                        @elseif(auth()->user()->hasRole('employee'))
+                            <x-nav-link :href="route('employee.dashboard')" :active="request()->routeIs('employee.dashboard')">
+                                {{ __('Panel pracownika') }}
+                            </x-nav-link>
+                        @elseif(auth()->user()->hasRole('admin'))
+                            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                                {{ __('Panel administratora') }}
+                            </x-nav-link>
+                        @endif
+                    @endauth
                 </div>
             </div>
 
@@ -85,12 +102,29 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
+
+        <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('Strona główna') }}
             </x-responsive-nav-link>
+
+            @auth
+                @if(auth()->user()->hasRole('client'))
+                    <x-responsive-nav-link :href="route('client.dashboard')" :active="request()->routeIs('client.dashboard')">
+                        {{ __('Panel klienta') }}
+                    </x-responsive-nav-link>
+                @elseif(auth()->user()->hasRole('employee'))
+                    <x-responsive-nav-link :href="route('employee.dashboard')" :active="request()->routeIs('employee.dashboard')">
+                        {{ __('Panel pracownika') }}
+                    </x-responsive-nav-link>
+                @elseif(auth()->user()->hasRole('admin'))
+                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                        {{ __('Panel administratora') }}
+                    </x-responsive-nav-link>
+                @endif
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->

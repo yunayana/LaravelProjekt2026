@@ -89,22 +89,24 @@ class UserSeeder extends Seeder
 
         // Dodaj karnet dla klienta
         $membership = GymMembership::create([
-            'user_id' => $client->id,
-            'start_date' => now(),
-            'end_date' => now()->addMonths(3),
-            'status' => 'active',
+            'user_id'         => $client->id,
+            'start_date'      => now(),
+            'end_date'        => now()->addMonths(3),
+            'status'          => 'active',
             'membership_type' => 'standard',
         ]);
 
         // Dodaj subskrypcję
         Subscription::create([
+            'user_id'           => $client->id,          
             'gym_membership_id' => $membership->id,
-            'plan_name' => 'Plan Standardowy',
-            'price' => 99.99,
-            'duration_months' => 3,
-            'start_date' => now(),
-            'end_date' => now()->addMonths(3),
-            'active' => true,
+            'plan_name'         => 'Plan Standardowy',
+            'price'             => 99.99,
+            'duration_months'   => 3,
+            'start_date'        => now(),
+            'end_date'          => now()->addMonths(3),
+            'active'            => true,
         ]);
+
     }
 }
