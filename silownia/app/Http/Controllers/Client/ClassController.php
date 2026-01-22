@@ -28,8 +28,9 @@ class ClassController extends Controller
 
         // Zajęcia, na które użytkownik jest zapisany
         $registrations = ClassRegistration::where('user_id', $user->id)
-            ->pluck('gym_class_id')
+            ->pluck('class_id')
             ->toArray();
+
 
         return view('client.classes.index', [
             'classes'            => $classes,
@@ -54,10 +55,19 @@ class ClassController extends Controller
         }
 
         // Sprawdź, czy nie jest już zapisany
-        ClassRegistration::firstOrCreate([
-            'user_id'      => $user->id,
-            'gym_class_id' => $class->id,
-        ]);
+        ClassRegistration::firstOrCreate(
+    [
+        'user_id'  => $user->id,
+        'class_id' => $class->id,
+    ],
+    [
+        'registered_at' => now(),
+        'status'        => 'active',
+    ]
+);
+
+
+
 
         return back()->with('status', 'Zostałeś zapisany na zajęcia.');
     }
@@ -67,8 +77,9 @@ class ClassController extends Controller
         $user = Auth::user();
 
         ClassRegistration::where('user_id', $user->id)
-            ->where('gym_class_id', $class->id)
+            ->where('class_id', $class->id)
             ->delete();
+
 
         return back()->with('status', 'Zostałeś wypisany z zajęć.');
     }

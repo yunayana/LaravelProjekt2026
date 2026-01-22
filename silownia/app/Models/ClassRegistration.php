@@ -23,8 +23,9 @@ class ClassRegistration extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function gymClass(): BelongsTo
-    {
-        return $this->belongsTo(GymClass::class, 'class_id');
-    }
+    public function gymClass()
+{
+    return $this->belongsTo(GymClass::class, 'class_id');
+}
+
 }

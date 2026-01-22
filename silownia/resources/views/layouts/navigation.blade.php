@@ -25,6 +25,9 @@
                             <x-nav-link :href="route('client.membership.index')" :active="request()->routeIs('client.membership.index')">
                                 {{ __('Mój karnet') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('client.classes.index')" :active="request()->routeIs('client.classes.index')">
+                                {{ __('Zajęcia') }}
+                            </x-nav-link>
                         @elseif(auth()->user()->hasRole('employee'))
                             <x-nav-link :href="route('employee.dashboard')" :active="request()->routeIs('employee.dashboard')">
                                 {{ __('Panel pracownika') }}
