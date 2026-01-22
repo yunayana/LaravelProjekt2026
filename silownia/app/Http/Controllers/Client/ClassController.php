@@ -22,21 +22,43 @@ class ClassController extends Controller
             ->exists();
 
         // Wszystkie zajęcia z trenerem
-        $classes = GymClass::with('trainer')
-            ->orderBy('schedule')
-            ->get();
+        $classes = GymClass::with('trainer')->get();
 
-        // Zajęcia, na które użytkownik jest zapisany
-        $registrations = ClassRegistration::where('user_id', $user->id)
-            ->pluck('class_id')
-            ->toArray();
+    $schedule = [
+        'Poniedziałek' => [],
+        'Wtorek'       => [],
+        'Środa'        => [],
+        'Czwartek'     => [],
+        'Piątek'       => [],
+        'Sobota'       => [],
+        'Niedziela'    => [],
+    ];
+
+    foreach ($classes as $class) {
+        
+        [$day, $time] = explode(' ', $class->schedule, 2);
+        $schedule[$day][] = [
+            'time'    => $time,
+            'class'   => $class,
+        ];
+    }
+
+    $registrations = ClassRegistration::where('user_id', $user->id)
+        ->pluck('class_id')
+        ->toArray();
 
 
-        return view('client.classes.index', [
-            'classes'            => $classes,
-            'registrations'      => $registrations,
-            'hasActiveMembership'=> $hasActiveMembership,
-        ]);
+        $myClasses = GymClass::with('trainer')
+        ->whereIn('id', $registrations)
+        ->orderBy('schedule')
+        ->get();
+
+    return view('client.classes.index', [
+        'schedule'           => $schedule,
+        'registrations'      => $registrations,
+        'hasActiveMembership'=> $hasActiveMembership ?? true,
+        'myClasses'          => $myClasses,
+    ]);
     }
 
     public function register(GymClass $class)

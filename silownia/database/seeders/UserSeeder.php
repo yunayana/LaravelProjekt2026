@@ -62,6 +62,23 @@ class UserSeeder extends Seeder
             'bio' => 'Instruktor Yoga i pilates',
         ]);
 
+        $trainer3 = Trainer::create([
+            'name'           => 'Piotr Lewandowski',
+            'email'          => 'piotr@gym.pl',
+            'phone'          => '555111222',
+            'specialization' => 'Trening siłowy',
+            'bio'            => 'Specjalista od budowania siły i masy mięśniowej',
+        ]);
+
+        $trainer4 = Trainer::create([
+            'name'           => 'Anna Zielińska',
+            'email'          => 'anna@gym.pl',
+            'phone'          => '555333444',
+            'specialization' => 'Pilates / Zdrowy kręgosłup',
+            'bio'            => 'Instruktorka pilatesu z doświadczeniem w pracy z osobami początkującymi',
+        ]);
+
+
         // Dodaj zajęcia
         GymClass::create([
             'trainer_id' => $trainer1->id,
@@ -86,6 +103,47 @@ class UserSeeder extends Seeder
             'schedule' => 'Środa 17:00',
             'max_participants' => 10,
         ]);
+
+                GymClass::create([
+            'trainer_id'       => $trainer1->id,
+            'name'             => 'HIIT Spalanie',
+            'description'      => 'Intensywny trening interwałowy dla średniozaawansowanych',
+            'schedule'         => 'Czwartek 18:30',
+            'max_participants' => 20,
+        ]);
+
+        GymClass::create([
+            'trainer_id'       => $trainer2->id,
+            'name'             => 'Stretching & Mobility',
+            'description'      => 'Rozciąganie i mobilność dla wszystkich poziomów',
+            'schedule'         => 'Piątek 17:00',
+            'max_participants' => 25,
+        ]);
+
+        GymClass::create([
+    'trainer_id'       => $trainer3->id,
+    'name'             => 'Full Body Workout',
+    'description'      => 'Ogólnorozwojowy trening całego ciała',
+    'schedule'         => 'Sobota 10:00',
+    'max_participants' => 18,
+        ]);
+
+        GymClass::create([
+            'trainer_id'       => $trainer4->id,
+            'name'             => 'Zdrowy kręgosłup',
+            'description'      => 'Zajęcia wzmacniające mięśnie posturalne i odciążające kręgosłup',
+            'schedule'         => 'Czwartek 17:00',
+            'max_participants' => 16,
+        ]);
+
+        GymClass::create([
+            'trainer_id'       => $trainer3->id,
+            'name'             => 'Trening obwodowy',
+            'description'      => 'Intensywny trening na stacjach dla osób średniozaawansowanych',
+            'schedule'         => 'Wtorek 18:30',
+            'max_participants' => 14,
+        ]);
+
 
         // Dodaj karnet dla klienta
         $membership = GymMembership::create([
