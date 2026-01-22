@@ -36,25 +36,24 @@ class MembershipController extends Controller
         ]);
 
         $start = now();
-        $end   = now()->addDays($data['duration']); 
+        $end   = now()->addDays((int) $data['duration']); 
 
         $membership = GymMembership::create([
             'user_id'         => $user->id,
-            'start_date'      => $start,
-            'end_date'        => $end,
+            'start_date'      => $start->toDateString(),
+            'end_date'        => $end->toDateString(),
             'status'          => 'active',
             'membership_type' => $data['membership_type'],
         ]);
 
         $subscription = Subscription::create([
-            'user_id'       => $user->id,
-            'membership_id' => $membership->id,
-            'name'          => $data['membership_type'],
-            'price'         => $data['price'],
-            'duration'      => $data['duration'],
-            'start_date'    => $start,
-            'end_date'      => $end,
-            'active'        => true,
+            'gym_membership_id' => $membership->id,
+            'plan_name'         => $data['membership_type'],
+            'price'             => $data['price'],
+            'duration_months'   => max(1, (int) $data['duration'] / 30), // konwertuj dni na miesiące
+            'start_date'        => $start->toDateString(),
+            'end_date'          => $end->toDateString(),
+            'active'            => true,
         ]);
 
         // Jeśli masz tabelę payments – opcjonalnie
@@ -71,6 +70,24 @@ class MembershipController extends Controller
         return redirect()
             ->route('client.membership.index')
             ->with('status', 'Karnet został aktywowany.');
+    }
+
+    public function cancel(Request $request)
+    {
+        $user = $request->user();
+        $membership = $user->gymMembership;
+
+        if (!$membership) {
+            return redirect()
+                ->route('client.membership.index')
+                ->with('error', 'Nie masz aktywnego karnetu do anulowania.');
+        }
+
+        $membership->update(['status' => 'cancelled']);
+
+        return redirect()
+            ->route('client.membership.index')
+            ->with('status', 'Karnet został anulowany.');
     }
 }
 

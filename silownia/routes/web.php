@@ -39,6 +39,9 @@ Route::middleware(['auth', 'verified', 'role:client'])
         Route::post('/membership', [MembershipController::class, 'store'])
             ->name('membership.store');
 
+        Route::delete('/membership', [MembershipController::class, 'cancel'])
+            ->name('membership.cancel');
+
         // Zajęcia
         Route::get('/classes', [ClientClassController::class, 'index'])
             ->name('classes.index');

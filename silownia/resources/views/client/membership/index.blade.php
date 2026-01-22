@@ -37,16 +37,51 @@
                         <span class="font-medium text-red-700">nieaktywny</span>
                     @endif
                 </p>
+
+                <div class="flex gap-3 mt-4 pt-4 border-t border-slate-200">
+                    <a 
+                        href="#renewal-form"
+                        class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V9.414l-4.293 4.293a1 1 0 01-1.414-1.414L13.586 8H12z" clip-rule="evenodd"></path>
+                        </svg>
+                        Przedłuż karnet
+                    </a>
+
+                    <form action="{{ route('client.membership.cancel') }}" method="POST" onsubmit="return confirm('Czy na pewno chcesz anulować karnet?');" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button 
+                            type="submit"
+                            class="inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        >
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            Anuluj karnet
+                        </button>
+                    </form>
+                </div>
             </div>
         @else
-            <p class="text-slate-800">
+            <p class="text-slate-800 mb-4">
                 Nie masz jeszcze aktywnego karnetu.
             </p>
+            <a 
+                href="#renewal-form"
+                class="inline-flex items-center rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            >
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+                </svg>
+                Kup karnet
+            </a>
         @endif
     </section>
 
     {{-- Formularz zakupu/przedłużenia karnetu --}}
-    <section aria-labelledby="buy-membership-heading" class="mb-10">
+    <section aria-labelledby="buy-membership-heading" class="mb-10" id="renewal-form">
         <h2 id="buy-membership-heading" class="text-xl font-medium text-slate-900 mb-3">
             Kup / przedłuż karnet
         </h2>
@@ -61,7 +96,7 @@
                 <select
                     id="membership_type"
                     name="membership_type"
-                    class="mt-1 block w-full rounded-md border-slate-300 bg-white px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    class="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     required
                 >
                     <option value="">Wybierz...</option>
@@ -85,7 +120,7 @@
                     id="duration"
                     name="duration"
                     min="1"
-                    class="mt-1 block w-full rounded-md border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value="{{ old('duration', 30) }}"
                     required
                 >
@@ -106,7 +141,7 @@
                     name="price"
                     min="0"
                     step="0.01"
-                    class="mt-1 block w-full rounded-md border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value="{{ old('price', 99) }}"
                     required
                 >
@@ -159,7 +194,7 @@
                         @foreach ($subscriptions as $subscription)
                             <tr>
                                 <td class="px-3 py-2 text-sm text-slate-800">
-                                    {{ $subscription->name }}
+                                    {{ $subscription->plan_name }}
                                 </td>
                                 <td class="px-3 py-2 text-sm text-slate-800">
                                     {{ $subscription->start_date?->format('d.m.Y') }}

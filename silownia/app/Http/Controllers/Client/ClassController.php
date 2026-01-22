@@ -1,48 +1,66 @@
 <?php
-
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\GymClass;
 use App\Models\ClassRegistration;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ClassController extends Controller
 {
     public function index()
     {
-        $classes = GymClass::with('trainer', 'registrations')->get();
-        $registeredClassIds = Auth::user()->classRegistrations->pluck('class_id');
+        $user = auth()->user();
 
-        return view('client.classes.index', compact('classes', 'registeredClassIds'));
+        $classes = GymClass::with('trainer')
+            ->orderBy('schedule')
+            ->get();
+
+        $registeredIds = $user->classRegistrations()
+            ->pluck('class_id')
+            ->toArray();
+
+        return view('client.classes.index', compact('classes', 'registeredIds'));
     }
 
-    public function register(GymClass $class)
+    public function register(GymClass $class, Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
 
-        $exists = ClassRegistration::where('user_id', $user->id)
-            ->where('class_id', $class->id)
+        // Sprawdź, czy ma aktywny karnet
+        $hasActiveMembership = $user->gymMemberships()
+            ->where('status', 'active')
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
             ->exists();
 
-        if (!$exists) {
-            ClassRegistration::create([
-                'user_id' => $user->id,
-                'class_id' => $class->id,
-                'registered_at' => now(),
-                'status' => 'active',
-            ]);
+        if (! $hasActiveMembership) {
+            return back()->with('status', 'Nie masz aktywnego karnetu.');
         }
 
-        return back()->with('success', 'Zarejestrowano na zajęcia!');
+        // Limit miejsc
+        $currentCount = $class->registrations()->count();
+        if ($currentCount >= $class->max_participants) {
+            return back()->with('status', 'Brak wolnych miejsc na te zajęcia.');
+        }
+
+        // Uniknij duplikatów
+        ClassRegistration::firstOrCreate([
+            'user_id'  => $user->id,
+            'class_id' => $class->id,
+        ]);
+
+        return back()->with('status', 'Zostałeś zapisany na zajęcia.');
     }
 
-    public function unregister(GymClass $class)
+    public function unregister(GymClass $class, Request $request)
     {
-        Auth::user()->classRegistrations()
+        $user = $request->user();
+
+        ClassRegistration::where('user_id', $user->id)
             ->where('class_id', $class->id)
             ->delete();
 
-        return back()->with('success', 'Anulowano rejestrację!');
+        return back()->with('status', 'Zostałeś wypisany z zajęć.');
     }
 }

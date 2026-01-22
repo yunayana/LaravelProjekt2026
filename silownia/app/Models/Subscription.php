@@ -7,25 +7,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Subscription extends Model
 {
     protected $fillable = [
-        'user_id',
-        'membership_id',   // FK do gym_memberships
-        'name',
+        'gym_membership_id',
+        'plan_name',
         'price',
-        'duration',        
+        'duration_months',        
         'start_date',
         'end_date',
         'active',
     ];
 
     protected $casts = [
-        'start_date' => 'datetime',
-        'end_date'   => 'datetime',
+        'start_date' => 'date',
+        'end_date'   => 'date',
         'active'     => 'boolean',
     ];
 
     public function gymMembership(): BelongsTo
     {
-        return $this->belongsTo(GymMembership::class, 'membership_id');
+        return $this->belongsTo(GymMembership::class, 'gym_membership_id');
     }
 
     public function user(): BelongsTo
