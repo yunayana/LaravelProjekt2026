@@ -53,6 +53,9 @@ Route::middleware(['auth', 'verified', 'role:client'])
 
         Route::post('/classes/{class}/unregister', [ClientClassController::class, 'unregister'])
             ->name('classes.unregister');
+
+        Route::post('/membership/cancel-last-extension', [MembershipController::class, 'cancelLastExtension'])
+            ->name('membership.cancel-last-extension');
     });
 
 // Employee Routes
