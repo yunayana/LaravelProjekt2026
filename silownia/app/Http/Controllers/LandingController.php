@@ -2,38 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\GymMembership;
 use App\Models\GymClass;
 use App\Models\Trainer;
-use Illuminate\View\View;
 
 class LandingController extends Controller
 {
-    public function index(): View
+    public function index()
     {
-        // 3–4 przykładowe karnety
-        $memberships = GymMembership::query()
-            ->orderBy('price')
+        $memberships = [
+            [
+                'name'     => 'Standard 3 miesiące',
+                'price'    => 99.99,
+                'desc'     => 'Dostęp do siłowni i zajęć grupowych',
+                'duration' => '3 miesiące',
+            ],
+            [
+                'name'     => 'Premium 6 miesięcy',
+                'price'    => 179.99,
+                'desc'     => 'Nielimitowane zajęcia + sauna',
+                'duration' => '6 miesięcy',
+            ],
+        ];
+
+        $classes = GymClass::with('trainer')
+            ->orderBy('schedule')
             ->take(4)
             ->get();
 
-        // Najbliższe zajęcia z relacją trener
-        $classes = GymClass::query()
-            ->with('trainer')
-            ->orderBy('start_time')
-            ->take(5)
-            ->get();
+        $trainers = Trainer::take(4)->get();
 
-        // Lista trenerów
-        $trainers = Trainer::query()
-            ->orderBy('name')
-            ->take(6)
-            ->get();
-
-        return view('landing', [
-            'memberships' => $memberships,
-            'classes'     => $classes,
-            'trainers'    => $trainers,
-        ]);
+        return view('landing', compact('memberships', 'classes', 'trainers'));
     }
 }
