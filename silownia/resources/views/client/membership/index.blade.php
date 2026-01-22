@@ -88,85 +88,56 @@
 
 
     {{-- Formularz zakupu/przedłużenia karnetu --}}
-    <section aria-labelledby="buy-membership-heading" class="mb-10" id="renewal-form">
-        <h2 id="buy-membership-heading" class="text-xl font-medium text-slate-900 mb-3">
-            Kup / przedłuż karnet
-        </h2>
+<section aria-labelledby="buy-membership-heading" class="mb-10" id="renewal-form">
+    <h2 id="buy-membership-heading" class="text-xl font-medium text-slate-900 mb-3">
+        Kup / przedłuż karnet
+    </h2>
 
-        <form action="{{ route('client.membership.store') }}" method="POST" class="space-y-4">
-            @csrf
+    <form action="{{ route('client.membership.store') }}" method="POST" class="space-y-4">
+        @csrf
 
-            <div>
-                <label for="membership_type" class="block text-sm font-medium text-slate-900">
-                    Typ karnetu
-                </label>
-                <select
-                    id="membership_type"
-                    name="membership_type"
-                    class="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    required
-                >
-                    <option value="">Wybierz...</option>
-                    <option value="Basic">Basic (miesięczny)</option>
-                    <option value="Premium">Premium (miesięczny)</option>
-                    <option value="VIP">VIP (miesięczny)</option>
-                </select>
-                @error('membership_type')
-                    <p class="mt-1 text-sm text-red-700" id="membership_type_error">
-                        {{ $message }}
-                    </p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="duration" class="block text-sm font-medium text-slate-900">
-                    Czas trwania (dni)
-                </label>
-                <input
-                    type="number"
-                    id="duration"
-                    name="duration"
-                    min="1"
-                    class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    value="{{ old('duration', 30) }}"
-                    required
-                >
-                @error('duration')
-                    <p class="mt-1 text-sm text-red-700" id="duration_error">
-                        {{ $message }}
-                    </p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="price" class="block text-sm font-medium text-slate-900">
-                    Cena (PLN)
-                </label>
-                <input
-                    type="number"
-                    id="price"
-                    name="price"
-                    min="0"
-                    step="0.01"
-                    class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    value="{{ old('price', 99) }}"
-                    required
-                >
-                @error('price')
-                    <p class="mt-1 text-sm text-red-700" id="price_error">
-                        {{ $message }}
-                    </p>
-                @enderror
-            </div>
-
-            <button
-                type="submit"
-                class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        {{-- Typ karnetu --}}
+        <div>
+            <label for="membership_type" class="block text-sm font-medium text-slate-900">
+                Typ karnetu
+            </label>
+            <select
+                id="membership_type"
+                name="membership_type"
+                class="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                required
             >
-                Zapisz karnet
-            </button>
-        </form>
-    </section>
+                <option value="">Wybierz...</option>
+                <option value="Basic">Basic – 79 zł / 30 dni</option>
+                <option value="Premium">Premium – 99 zł / 30 dni</option>
+                <option value="VIP">VIP – 129 zł / 30 dni</option>
+            </select>
+            @error('membership_type')
+                <p class="mt-1 text-sm text-red-700" id="membership_type_error">
+                    {{ $message }}
+                </p>
+            @enderror
+        </div>
+
+        {{-- Informacja o czasie trwania --}}
+        <p class="text-sm text-slate-700">
+            Czas trwania każdego karnetu: <span class="font-medium">30 dni</span> (ustawiany automatycznie).
+        </p>
+
+        {{-- Informacja o cenie --}}
+        <p class="text-sm text-slate-700">
+            Cena zależy od wybranego typu karnetu (Basic/Premium/VIP).
+        </p>
+
+        <button
+            type="submit"
+            class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+            Zapisz karnet
+        </button>
+    </form>
+</section>
+
 
     {{-- Historia subskrypcji --}}
     <section aria-labelledby="history-heading">

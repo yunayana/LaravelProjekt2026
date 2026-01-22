@@ -22,6 +22,9 @@
                             <x-nav-link :href="route('client.dashboard')" :active="request()->routeIs('client.dashboard')">
                                 {{ __('Panel klienta') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('client.membership.index')" :active="request()->routeIs('client.membership.index')">
+                                {{ __('Mój karnet') }}
+                            </x-nav-link>
                         @elseif(auth()->user()->hasRole('employee'))
                             <x-nav-link :href="route('employee.dashboard')" :active="request()->routeIs('employee.dashboard')">
                                 {{ __('Panel pracownika') }}
@@ -114,6 +117,9 @@
                 @if(auth()->user()->hasRole('client'))
                     <x-responsive-nav-link :href="route('client.dashboard')" :active="request()->routeIs('client.dashboard')">
                         {{ __('Panel klienta') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('client.membership.index')" :active="request()->routeIs('client.membership.index')">
+                        {{ __('Mój karnet') }}
                     </x-responsive-nav-link>
                 @elseif(auth()->user()->hasRole('employee'))
                     <x-responsive-nav-link :href="route('employee.dashboard')" :active="request()->routeIs('employee.dashboard')">

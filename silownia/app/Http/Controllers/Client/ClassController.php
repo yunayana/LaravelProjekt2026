@@ -4,61 +4,70 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use App\Models\GymClass;
 use App\Models\ClassRegistration;
+use App\Models\GymMembership;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClassController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
+        // Sprawdź, czy ma aktywny karnet
+        $hasActiveMembership = GymMembership::query()
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->whereDate('end_date', '>=', now())
+            ->exists();
+
+        // Wszystkie zajęcia z trenerem
         $classes = GymClass::with('trainer')
             ->orderBy('schedule')
             ->get();
 
-        $registeredIds = $user->classRegistrations()
-            ->pluck('class_id')
+        // Zajęcia, na które użytkownik jest zapisany
+        $registrations = ClassRegistration::where('user_id', $user->id)
+            ->pluck('gym_class_id')
             ->toArray();
 
-        return view('client.classes.index', compact('classes', 'registeredIds'));
+        return view('client.classes.index', [
+            'classes'            => $classes,
+            'registrations'      => $registrations,
+            'hasActiveMembership'=> $hasActiveMembership,
+        ]);
     }
 
-    public function register(GymClass $class, Request $request)
+    public function register(GymClass $class)
     {
-        $user = $request->user();
+        $user = Auth::user();
 
-        // Sprawdź, czy ma aktywny karnet
-        $hasActiveMembership = $user->gymMemberships()
+        // blokada bez aktywnego karnetu
+        $hasActiveMembership = GymMembership::query()
+            ->where('user_id', $user->id)
             ->where('status', 'active')
-            ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
+            ->whereDate('end_date', '>=', now())
             ->exists();
 
         if (! $hasActiveMembership) {
-            return back()->with('status', 'Nie masz aktywnego karnetu.');
+            return back()->with('status', 'Musisz mieć aktywny karnet, aby zapisać się na zajęcia.');
         }
 
-        // Limit miejsc
-        $currentCount = $class->registrations()->count();
-        if ($currentCount >= $class->max_participants) {
-            return back()->with('status', 'Brak wolnych miejsc na te zajęcia.');
-        }
-
-        // Uniknij duplikatów
+        // Sprawdź, czy nie jest już zapisany
         ClassRegistration::firstOrCreate([
-            'user_id'  => $user->id,
-            'class_id' => $class->id,
+            'user_id'      => $user->id,
+            'gym_class_id' => $class->id,
         ]);
 
         return back()->with('status', 'Zostałeś zapisany na zajęcia.');
     }
 
-    public function unregister(GymClass $class, Request $request)
+    public function unregister(GymClass $class)
     {
-        $user = $request->user();
+        $user = Auth::user();
 
         ClassRegistration::where('user_id', $user->id)
-            ->where('class_id', $class->id)
+            ->where('gym_class_id', $class->id)
             ->delete();
 
         return back()->with('status', 'Zostałeś wypisany z zajęć.');

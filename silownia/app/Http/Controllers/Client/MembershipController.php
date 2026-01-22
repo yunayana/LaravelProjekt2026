@@ -42,67 +42,73 @@ class MembershipController extends Controller
             /**
              * Kup / przedłuż karnet.
              */
-          public function store(Request $request)
+        
+public function store(Request $request)
 {
     $user = Auth::user();
 
+    // Stałe parametry planów
+    $plans = [
+        'Basic'   => ['days' => 30, 'price' => 79],
+        'Premium' => ['days' => 30, 'price' => 99],
+        'VIP'     => ['days' => 30, 'price' => 129],
+    ];
+
     $validated = $request->validate([
-        'membership_type' => ['required', 'string', 'max:255'],
-        'duration'        => ['required', 'integer', 'min:1'],   // dni
-        'price'           => ['required', 'numeric', 'min:0'],
+        'membership_type' => ['required', 'in:Basic,Premium,VIP'],
     ]);
 
-    DB::transaction(function () use ($user, $validated) {
-        $durationDays = (int) $validated['duration'];
+    $plan         = $plans[$validated['membership_type']];
+    $durationDays = (int) $plan['days'];
+    $price        = $plan['price'];
 
-        // Aktualny karnet (ostatni, jaki ma użytkownik)
+    DB::transaction(function () use ($user, $validated, $durationDays, $price) {
+        // Aktualny aktywny karnet
         $currentMembership = GymMembership::query()
-        ->where('user_id', $user->id)
-        ->where('status', 'active')
-        ->whereDate('end_date', '>=', now())
-        ->orderByDesc('end_date')
-        ->first();
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->whereDate('end_date', '>=', now())
+            ->orderByDesc('end_date')
+            ->first();
 
+        if ($currentMembership) {
+            // PRZEDŁUŻENIE: od dnia po obecnym końcu
+            $startDate = $currentMembership->end_date->copy()->addDay();
+            $endDate   = $startDate->copy()->addDays($durationDays);
 
-       if ($currentMembership) {
-    // PRZEDŁUŻENIE
-    $startDate = $currentMembership->end_date->copy()->addDay();
-    $endDate   = $startDate->copy()->addDays($durationDays);
+            $currentMembership->update([
+                'end_date'        => $endDate,
+                'status'          => 'active',
+                'membership_type' => $validated['membership_type'],
+            ]);
 
-    $currentMembership->update([
-        'end_date'        => $endDate,
-        'status'          => 'active',
-        'membership_type' => $validated['membership_type'],
-    ]);
+            $membership = $currentMembership;
+        } else {
+            // PIERWSZY ZAKUP / po anulowaniu – od dziś
+            $startDate = now();
+            $endDate   = $startDate->copy()->addDays($durationDays);
 
-    $membership = $currentMembership;
-} else {
-    // PIERWSZY ZAKUP lub po anulowaniu – od dziś
-    $startDate = now();
-    $endDate   = $startDate->copy()->addDays($durationDays);
+            $membership = GymMembership::create([
+                'user_id'         => $user->id,
+                'start_date'      => $startDate,
+                'end_date'        => $endDate,
+                'status'          => 'active',
+                'membership_type' => $validated['membership_type'],
+            ]);
+        }
 
-    $membership = GymMembership::create([
-        'user_id'         => $user->id,
-        'start_date'      => $startDate,
-        'end_date'        => $endDate,
-        'status'          => 'active',
-        'membership_type' => $validated['membership_type'],
-    ]);
-}
-
-
-        // Dezaktywuj poprzednią subskrypcję
+        // Dezaktywuj poprzednią aktywną subskrypcję
         Subscription::query()
             ->where('user_id', $user->id)
             ->where('active', true)
             ->update(['active' => false]);
 
-        // Dodaj nową subskrypcję dla tego przedłużenia/zakupu
+        // Nowa subskrypcja dla tego okresu
         Subscription::create([
             'user_id'           => $user->id,
             'gym_membership_id' => $membership->id,
             'plan_name'         => $validated['membership_type'],
-            'price'             => $validated['price'],
+            'price'             => $price,
             'duration_months'   => 1,
             'start_date'        => $startDate,
             'end_date'          => $endDate,
