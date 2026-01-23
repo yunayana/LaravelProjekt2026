@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* WYSOKI KONTRAST */
+body.hc {
+    background-color: #000;
+    color: #fff;
+}
+
+body.hc a {
+    color: #ffd700;
+}
+
+body.hc header,
+body.hc nav,
+body.hc main,
+body.hc .bg-white {
+    background-color: #000 !important;
+    color: #fff !important;
+    border-color: #fff !important;
+}
+
+/* DUŻA CZCIONKA */
+body.large-font {
+    font-size: 18px;
+}
+
+body.large-font p,
+body.large-font span,
+body.large-font a,
+body.large-font button,
+body.large-font li {
+    font-size: 1.1em;
+}
