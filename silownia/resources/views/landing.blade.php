@@ -55,11 +55,17 @@
             </div>
         </div>
 
-        <div class="hidden md:block">
-            {{-- tu możesz dodać zdjęcie / grafikę siłowni --}}
-            <div class="aspect-video rounded-2xl bg-gradient-to-br from-indigo-500 to-emerald-500 opacity-90"></div>
-        </div>
     </section>
+
+    {{-- Pasek z obrazem --}}
+<section
+    class="w-full h-48 md:h-56 lg:h-64 bg-cover bg-center bg-no-repeat rounded-2xl mb-12"
+    style="background-image: url('{{ asset('images/gym-banner.png') }}');"
+    role="img"
+    aria-label="Widok siłowni i strefy treningowej"
+>
+</section>
+
 
     {{-- Karnety --}}
     <section class="mb-12">
