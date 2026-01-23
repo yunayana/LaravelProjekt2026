@@ -52,6 +52,7 @@ class UserSeeder extends Seeder
             'phone' => '123456789',
             'specialization' => 'CrossFit',
             'bio' => 'Doświadczony trener CrossFitu',
+            'photo'          => 'trainers/jan.png',
         ]);
 
         $trainer2 = Trainer::create([
@@ -60,6 +61,7 @@ class UserSeeder extends Seeder
             'phone' => '987654321',
             'specialization' => 'Yoga',
             'bio' => 'Instruktor Yoga i pilates',
+            'photo'          => 'trainers/maria.png',
         ]);
 
         $trainer3 = Trainer::create([
@@ -68,6 +70,7 @@ class UserSeeder extends Seeder
             'phone'          => '555111222',
             'specialization' => 'Trening siłowy',
             'bio'            => 'Specjalista od budowania siły i masy mięśniowej',
+            'photo'          => 'trainers/piotr.png',
         ]);
 
         $trainer4 = Trainer::create([
@@ -76,6 +79,7 @@ class UserSeeder extends Seeder
             'phone'          => '555333444',
             'specialization' => 'Pilates / Zdrowy kręgosłup',
             'bio'            => 'Instruktorka pilatesu z doświadczeniem w pracy z osobami początkującymi',
+            'photo'          => 'trainers/anna.png',
         ]);
 
 

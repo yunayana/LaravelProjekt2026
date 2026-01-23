@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('specialization')->nullable();
             $table->text('bio')->nullable();
             $table->timestamps();
+            
         });
     }
 
