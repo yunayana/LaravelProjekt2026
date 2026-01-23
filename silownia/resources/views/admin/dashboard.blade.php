@@ -1,81 +1,42 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Panel administratora') }}
+        </h2>
+    </x-slot>
 
-@section('content')
-<div class="container">
-    <h2 class="mb-4">Panel Administratora</h2>
+    <div class="py-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                
 
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5>Łączna liczba użytkowników</h5>
-                    <h2 class="text-primary">{{ $totalUsers }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5>Liczba klientów</h5>
-                    <h2 class="text-info">{{ $totalClients }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5>Dostępne zajęcia</h5>
-                    <h2 class="text-success">{{ $totalClasses }}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5>Aktywne karnety</h5>
-                    <h2 class="text-warning">{{ $activeMemberships }}</h2>
+                
+
+                <div class="flex flex-wrap gap-3">
+                    {{-- Użytkownicy --}}
+                    <a href="{{ route('admin.users.index') }}"
+                       class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+                        Przejdź do listy użytkowników
+                    </a>
+
+                    {{-- Usunięci użytkownicy (kosz) --}}
+                    <a href="{{ route('admin.users.trashed') }}"
+                       class="inline-flex items-center rounded-md bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-300">
+                        Zobacz usuniętych użytkowników
+                    </a>
+
+                    {{-- Karnety --}}
+                    <a href="{{ route('admin.plans.index') }}"
+                       class="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
+                        Zarządzaj karnetami
+                    </a>
+                    <a href="{{ route('admin.classes.index') }}"
+                    class="inline-flex items-center rounded-md bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700">
+                        Zarządzaj zajęciami
+                    </a>
+
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5>Sprzęt dostępny</h5>
-                    <h2 class="text-danger">{{ $equipmentCount }}</h2>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card mt-4">
-        <div class="card-header">
-            <h5>Ostatnio zarejestrowani użytkownicy</h5>
-        </div>
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Imię i Nazwisko</th>
-                        <th>Email</th>
-                        <th>Rola</th>
-                        <th>Data rejestracji</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($recentUsers as $user)
-                        <tr>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ implode(', ', $user->roles->pluck('name')->toArray()) }}</td>
-                            <td>{{ $user->created_at->format('d.m.Y H:i') }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-@endsection
+</x-app-layout>

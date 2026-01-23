@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\GymClass;
-use App\Models\Trainer;
+use App\Models\MembershipPlan;
+use App\Models\User;
 
 class LandingController extends Controller
 {
@@ -29,8 +30,16 @@ class LandingController extends Controller
             ->take(4)
             ->get();
 
-        $trainers = Trainer::take(4)->get();
+        // NOWE: trenerzy jako users z rolą `trainer`
+        $trainers = User::whereHas('roles', fn($q) => $q->where('name', 'trainer'))
+            ->orderBy('name')
+            ->take(4)
+            ->get();
 
-        return view('landing', compact('memberships', 'classes', 'trainers'));
+        $plans = MembershipPlan::where('is_active', true)
+            ->orderBy('price')
+            ->get();
+
+        return view('landing', compact('memberships', 'classes', 'trainers', 'plans'));
     }
 }

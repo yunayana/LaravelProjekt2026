@@ -9,10 +9,15 @@
 
     {{-- Komunikat statusu --}}
     @if (session('status'))
-        <div class="mb-4 rounded-md bg-green-50 border border-green-400 px-4 py-3 text-sm text-green-800" role="status">
-            {{ session('status') }}
-        </div>
+    <div class="mb-4 rounded-md bg-green-50 border border-green-400 px-4 py-3 text-sm text-green-800" role="status">
+        {{ session('status') }}
+    </div>
+
+    @if ($membership)
+        <p><strong>Plan:</strong> {{ $membership->membership_type }}</p>
     @endif
+@endif
+
 
    {{-- Aktualny karnet --}}
 <section aria-labelledby="current-membership-heading" class="mb-8">
@@ -98,22 +103,30 @@
 
         {{-- Typ karnetu --}}
         <div>
-            <label for="membership_type" class="block text-sm font-medium text-slate-900">
+            <label for="membership_plan_id" class="block text-sm font-medium text-slate-900">
                 Typ karnetu
             </label>
-            <select
-                id="membership_type"
-                name="membership_type"
-                class="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                required
-            >
+
+            <select id="membership_plan_id" name="membership_plan_id"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    required>
                 <option value="">Wybierz...</option>
-                <option value="Basic">Basic – 79 zł / 30 dni</option>
-                <option value="Premium">Premium – 99 zł / 30 dni</option>
-                <option value="VIP">VIP – 129 zł / 30 dni</option>
+                @foreach($plans as $plan)
+                    @php
+                        // dla Basic/Premium/VIP value = nazwa,
+                        // dla planów admina value = db:ID
+                        $value = $plan->is_default
+                            ? $plan->name
+                            : 'db:' . $plan->id;
+                    @endphp
+                    <option value="{{ $value }}">
+                        {{ $plan->name }} – {{ number_format($plan->price, 2) }} zł / {{ $plan->duration_months * 30 }} dni
+                    </option>
+                @endforeach
             </select>
-            @error('membership_type')
-                <p class="mt-1 text-sm text-red-700" id="membership_type_error">
+
+            @error('membership_plan_id')
+                <p class="mt-1 text-sm text-red-700">
                     {{ $message }}
                 </p>
             @enderror
@@ -126,7 +139,7 @@
 
         {{-- Informacja o cenie --}}
         <p class="text-sm text-slate-700">
-            Cena zależy od wybranego typu karnetu (Basic/Premium/VIP).
+            Cena zależy od wybranego typu karnetu.
         </p>
 
         <button
@@ -137,6 +150,7 @@
         </button>
     </form>
 </section>
+
 
 
     {{-- Historia subskrypcji --}}

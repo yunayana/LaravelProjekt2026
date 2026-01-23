@@ -1,12 +1,11 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
- <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('home') }}">
+                    <a href="{{ route('home') }}" aria-label="Strona główna">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
@@ -18,21 +17,21 @@
                     </x-nav-link>
 
                     @auth
-                        @if(auth()->user()->hasRole('client'))
-                            <x-nav-link :href="route('client.dashboard')" :active="request()->routeIs('client.dashboard')">
-                                {{ __('Panel klienta') }}
-                            </x-nav-link>
+                        @php $user = auth()->user(); @endphp
+
+                        @if ($user->hasRole('client'))
+                           
                             <x-nav-link :href="route('client.membership.index')" :active="request()->routeIs('client.membership.index')">
                                 {{ __('Mój karnet') }}
                             </x-nav-link>
                             <x-nav-link :href="route('client.classes.index')" :active="request()->routeIs('client.classes.index')">
                                 {{ __('Zajęcia') }}
                             </x-nav-link>
-                        @elseif(auth()->user()->hasRole('employee'))
+                        @elseif ($user->hasRole('employee'))
                             <x-nav-link :href="route('employee.dashboard')" :active="request()->routeIs('employee.dashboard')">
                                 {{ __('Panel pracownika') }}
                             </x-nav-link>
-                        @elseif(auth()->user()->hasRole('admin'))
+                        @elseif ($user->hasRole('admin'))
                             <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                                 {{ __('Panel administratora') }}
                             </x-nav-link>
@@ -108,8 +107,7 @@
         </div>
     </div>
 
-
-        <!-- Responsive Navigation Menu -->
+    <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
@@ -117,18 +115,21 @@
             </x-responsive-nav-link>
 
             @auth
-                @if(auth()->user()->hasRole('client'))
-                    <x-responsive-nav-link :href="route('client.dashboard')" :active="request()->routeIs('client.dashboard')">
-                        {{ __('Panel klienta') }}
-                    </x-responsive-nav-link>
+                @php $user = auth()->user(); @endphp
+
+                @if ($user->hasRole('client'))
+                    
                     <x-responsive-nav-link :href="route('client.membership.index')" :active="request()->routeIs('client.membership.index')">
                         {{ __('Mój karnet') }}
                     </x-responsive-nav-link>
-                @elseif(auth()->user()->hasRole('employee'))
+                    <x-responsive-nav-link :href="route('client.classes.index')" :active="request()->routeIs('client.classes.index')">
+                        {{ __('Zajęcia') }}
+                    </x-responsive-nav-link>
+                @elseif ($user->hasRole('employee'))
                     <x-responsive-nav-link :href="route('employee.dashboard')" :active="request()->routeIs('employee.dashboard')">
                         {{ __('Panel pracownika') }}
                     </x-responsive-nav-link>
-                @elseif(auth()->user()->hasRole('admin'))
+                @elseif ($user->hasRole('admin'))
                     <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Panel administratora') }}
                     </x-responsive-nav-link>

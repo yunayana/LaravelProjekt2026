@@ -18,10 +18,10 @@ class GymClass extends Model
         'max_participants',
     ];
 
-    public function trainer(): BelongsTo
-    {
-        return $this->belongsTo(Trainer::class);
-    }
+    public function trainer()
+{
+    return $this->belongsTo(\App\Models\User::class, 'trainer_id');
+}
 
     public function registrations(): HasMany
     {

@@ -68,28 +68,49 @@
 
 
     {{-- Karnety --}}
-    <section class="mb-12">
-        <h2 class="text-2xl font-semibold text-slate-900 mb-4">Karnety</h2>
+    <section class="mt-10">
+    <h2 class="text-2xl font-semibold mb-4">Karnety</h2>
 
-        <div class="grid grid-cols-2 gap-6">
-            @foreach ($memberships as $plan)
-                <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-                    <h3 class="text-lg font-semibold text-slate-900">
-                        {{ $plan['name'] }}
-                    </h3>
-                    <p class="mt-1 text-sm text-slate-600">
-                        {{ $plan['desc'] }}
+    <div class="grid gap-6 md:grid-cols-3">
+        @forelse($plans as $plan)
+            <div class="bg-white shadow-sm rounded-lg p-6">
+                <h3 class="text-lg font-semibold mb-2">
+                    {{ $plan->name }}
+                </h3>
+
+                @if($plan->description)
+                    <p class="text-sm text-gray-600 mb-3">
+                        {{ $plan->description }}
                     </p>
-                    <p class="mt-3 text-2xl font-bold text-indigo-600">
-                        {{ number_format($plan['price'], 2, ',', ' ') }} PLN
-                    </p>
-                    <p class="text-xs text-slate-500">
-                        Okres: {{ $plan['duration'] }}
-                    </p>
-                </div>
-            @endforeach
-        </div>
-    </section>
+                @endif
+
+                <p class="text-2xl font-bold text-indigo-600 mb-1">
+                    {{ number_format($plan->price, 2) }} PLN
+                </p>
+                <p class="text-sm text-gray-500 mb-4">
+                    Okres: {{ $plan->duration_months }} miesiące
+                </p>
+
+                @auth
+                    @if(auth()->user()->hasRole('client'))
+                        <form method="POST" action="{{ route('client.membership.store') }}">
+                        @csrf
+                        <input type="hidden" name="membership_plan_id" value="{{ $plan->id }}">
+                        <button type="submit"
+                                class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+                            Wybierz ten karnet
+                        </button>
+                    </form>
+
+                    @endif
+                @endauth
+            </div>
+        @empty
+            <p>Brak dostępnych karnetów.</p>
+        @endforelse
+    </div>
+</section>
+
 
     {{-- Przykładowe zajęcia --}}
     <section class="mb-12">
@@ -102,8 +123,9 @@
                         {{ $class->name }}
                     </h3>
                     <p class="mt-1 text-xs text-slate-600">
-                        Instruktor: {{ $class->trainer->name }}
+                        Instruktor: {{ $class->trainer->name ?? 'Brak trenera' }}
                     </p>
+
                     <p class="mt-1 text-xs text-slate-600">
                         Termin: {{ $class->schedule }}
                     </p>

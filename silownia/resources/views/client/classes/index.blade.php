@@ -39,7 +39,7 @@
                                         {{ $item['time'] }} – {{ $item['class']->name }}
                                     </div>
                                     <div class="text-xs text-slate-600">
-                                        {{ $item['class']->trainer->name }}
+                                        {{ $item['class']->trainer->name ?? 'Brak trenera' }}
                                     </div>
 
                                     @if (in_array($item['class']->id, $registrations))
@@ -96,7 +96,7 @@
                                 {{ $class->name }}
                             </div>
                             <div class="text-xs text-slate-600">
-                                {{ $day }} • {{ $time }} • {{ $class->trainer->name }}
+                                {{ $day }} • {{ $time }} • {{ $class->trainer->name ?? 'Brak trenera' }}
                             </div>
                         </div>
 
