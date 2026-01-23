@@ -182,5 +182,63 @@ class MembershipController extends Controller
             ->with('status', 'Karnet został zapisany / przedłużony.');
     }
 
-    // cancel() i cancelLastExtension() zostają tak jak masz
+   public function cancel()
+{
+    $user = Auth::user();
+
+    $membership = GymMembership::query()
+        ->where('user_id', $user->id)
+        ->where('status', 'active')
+        ->whereDate('end_date', '>=', now())
+        ->orderByDesc('end_date')
+        ->first();
+
+    if ($membership) {
+        $membership->update([
+            'status' => 'cancelled',
+        ]);
+    }
+
+    return redirect()
+        ->route('client.membership.index')
+        ->with('status', 'Karnet został anulowany.');
+}
+
+public function cancelLastExtension()
+{
+    $user = Auth::user();
+
+    // aktualny aktywny karnet
+    $membership = GymMembership::query()
+        ->where('user_id', $user->id)
+        ->where('status', 'active')
+        ->whereDate('end_date', '>=', now())
+        ->orderByDesc('end_date')
+        ->first();
+
+    if ($membership) {
+        
+        $lastSubscription = Subscription::query()
+            ->where('user_id', $user->id)
+            ->where('gym_membership_id', $membership->id)
+            ->orderByDesc('start_date')
+            ->first();
+
+        if ($lastSubscription) {
+            
+            $durationDays = (int) ($lastSubscription->duration_months * 30);
+
+            $membership->end_date = $membership->end_date->copy()->subDays($durationDays);
+            $membership->save();
+
+           
+            $lastSubscription->update(['active' => false]);
+        }
+    }
+
+    return redirect()
+        ->route('client.membership.index')
+        ->with('status', 'Ostatnie przedłużenie zostało cofnięte.');
+}
+
 }
